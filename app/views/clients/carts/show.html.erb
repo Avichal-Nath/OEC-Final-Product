@@ -1,0 +1,116 @@
+<!-- app/views/clients/carts/show.html.erb -->
+<div class="container mt-5">
+  <div class="row">
+    <!-- Order Details Section -->
+    <div class="col-md-8">
+      <h2>Order Details</h2>
+      <% if @cart_items.present? %>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Items</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Subtotal</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @cart_items.each do |cart_item| %>
+              <tr>
+                <!-- Product Name and Image -->
+                <td>
+                  <div class="d-flex align-items-center">
+                    <%= image_tag cart_item.product.image, class: 'img-thumbnail', style: 'width: 100px;' %>
+                    <span class="ms-3"><%= cart_item.product.name %></span>
+                  </div>
+                </td>
+
+                <!-- Product Price -->
+                <td><%= number_to_currency(cart_item.product.price) %></td>
+
+                <!-- Quantity with Plus/Minus Controls -->
+                <td>
+                  <div class="d-flex align-items-center">
+                    <!-- Form for decreasing quantity -->
+                    <%= form_with url: update_quantity_clients_cart_path(id: cart_item.id), method: :patch, local: true do |f| %>
+                      <%= f.hidden_field :quantity, value: cart_item.quantity - 1 %>
+                      <%= f.submit "-", class: "btn btn-outline-secondary btn-sm me-2" unless cart_item.quantity <= 1 %>
+                    <% end %>
+
+                    <!-- Display current quantity -->
+                    <span class="me-2"><%= cart_item.quantity %></span>
+
+                    <!-- Form for increasing quantity -->
+                    <%= form_with url: update_quantity_clients_cart_path(id: cart_item.id), method: :patch, local: true do |f| %>
+                      <%= f.hidden_field :quantity, value: cart_item.quantity + 1 %>
+                      <%= f.submit "+", class: "btn btn-outline-secondary btn-sm" %>
+                    <% end %>
+                  </div>
+                </td>
+
+                <!-- Subtotal for product -->
+                <td><%= number_to_currency(cart_item.product.price * cart_item.quantity) %></td>
+
+                <!-- Remove Item -->
+                <td>
+                  <%= button_to 'Remove Item', remove_item_clients_cart_path(id: cart_item.product.id), method: :delete, class: 'btn btn-outline-danger btn-sm' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p>Your cart is empty.</p>
+        <%= link_to 'Continue Shopping', clients_products_path, class: 'btn btn-primary' %>
+      <% end %>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="col-md-4">
+      <h2>Summary</h2>
+      <table class="table">
+        <tr>
+          <th>Subtotal</th>
+          <td><%= number_to_currency(@cart_items.sum { |item| item.product.price * item.quantity }) %></td>
+        </tr>
+        <tr>
+          <th>Shipping</th>
+          <td>$$</td> <!-- You can replace $$ with the actual shipping logic later -->
+        </tr>
+        <tr>
+          <th>Order Total</th>
+          <td><%= number_to_currency(@cart_items.sum { |item| item.product.price * item.quantity }) %></td> <!-- Placeholder for total logic -->
+        </tr>
+      </table>
+
+      <%= form_with url: clients_mock_payments_path, method: :post, local: true do |form| %>
+  <h3>Payment Information</h3>
+  <div class="mb-3">
+    <label for="card_number">Card Number</label>
+    <%= form.text_field :card_number, name: 'payment_details[card_number]', class: 'form-control' %>
+  </div>
+
+  <div class="mb-3">
+    <label for="expiry">Expiry (MM/YY)</label>
+    <%= form.text_field :expiry, name: 'payment_details[expiry]', class: 'form-control' %>
+  </div>
+
+  <div class="mb-3">
+    <label for="cvv">CVV</label>
+    <%= form.text_field :cvv, name: 'payment_details[cvv]', class: 'form-control' %>
+  </div>
+
+  <%= form.submit 'Proceed To Checkout', class: 'btn btn-success w-100' %>
+<% end %>
+
+    </div>
+  </div>
+
+  <!-- Continue Shopping Button -->
+  <div class="row mt-4">
+    <div class="col-md-12 text-center">
+      <%= link_to 'Continue Shopping', clients_products_path, class: 'btn btn-outline-dark' %>
+    </div>
+  </div>
+</div>

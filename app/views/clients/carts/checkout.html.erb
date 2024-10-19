@@ -1,0 +1,46 @@
+<!-- app/views/clients/carts/checkout.html.erb -->
+<div class="container mt-5">
+  <h2>Checkout</h2>
+  
+  <h3>Order Summary</h3>
+  <table class="table">
+    <tr>
+      <th>Subtotal</th>
+      <td><%= number_to_currency(@subtotal) %></td>
+    </tr>
+    <tr>
+      <th>Shipping</th>
+      <td><%= number_to_currency(@shipping) %></td>
+    </tr>
+    <tr>
+      <th>Total</th>
+      <td><%= number_to_currency(@total) %></td>
+    </tr>
+  </table>
+
+  <h3>Payment Information</h3>
+  <%= form_with url: clients_mock_payments_path, method: :post, local: true do |form| %>
+    <div class="mb-3">
+      <label for="card_number">Card Number</label>
+      <%= form.text_field :card_number, name: 'payment_details[card_number]', class: 'form-control' %>
+    </div>
+
+    <div class="mb-3">
+      <label for="expiry">Expiry (MM/YY)</label>
+      <%= form.text_field :expiry, name: 'payment_details[expiry]', class: 'form-control' %>
+    </div>
+
+    <div class="mb-3">
+      <label for="cvv">CVV</label>
+      <%= form.text_field :cvv, name: 'payment_details[cvv]', class: 'form-control' %>
+    </div>
+
+    <%= form.submit 'Proceed To Checkout', class: 'btn btn-success w-100' %>
+  <% end %>
+
+  <div class="row mt-4">
+    <div class="col-md-12 text-center">
+      <%= link_to 'Back to Cart', clients_cart_path, class: 'btn btn-outline-dark' %>
+    </div>
+  </div>
+</div>

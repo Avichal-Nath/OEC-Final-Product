@@ -1,0 +1,43 @@
+<!-- app/views/users/edit.html.erb -->
+<div class="container mt-5">
+  <h1>Edit Profile</h1>
+  
+  <%= form_for @user, url: user_path(@user), method: :patch do |f| %>
+    <div class="form-group">
+      <%= f.label :email %>
+      <%= f.email_field :email, class: 'form-control', required: true %>
+    </div>
+
+    <div class="form-group mt-3">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control', required: true %>
+    </div>
+
+    <div class="form-group mt-3">
+      <%= f.label :address %>
+      <%= f.text_field :address, class: 'form-control' %>
+    </div>
+
+    <div class="form-group mt-3">
+      <%= f.label :phone_number %>
+      <%= f.telephone_field :phone_number, class: 'form-control' %>
+    </div>
+
+    <div class="form-group mt-3">
+      <%= f.label :password %>
+      <%= f.password_field :password, class: 'form-control' %>
+      <small>Leave blank if you don't want to change it</small>
+    </div>
+
+    <div class="form-group mt-3">
+      <%= f.label :password_confirmation %>
+      <%= f.password_field :password_confirmation, class: 'form-control' %>
+    </div>
+
+    <div class="form-group mt-4">
+      <%= f.submit 'Update Profile', class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+
+  <%= link_to 'Back to Profile', user_path(@user), class: 'btn btn-secondary mt-3' %>
+</div>

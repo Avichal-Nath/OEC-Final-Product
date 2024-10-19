@@ -1,0 +1,26 @@
+<!-- app/views/checkout/new.html.erb -->
+<h2>Checkout</h2>
+
+<%= form_with url: mock_payments_path, method: :post, local: true do |form| %>
+  <div>
+    <label for="card_number">Card Number</label>
+    <%= form.text_field :card_number, name: 'payment_details[card_number]' %>
+  </div>
+
+  <div>
+    <label for="expiry">Expiry (MM/YY)</label>
+    <%= form.text_field :expiry, name: 'payment_details[expiry]' %>
+  </div>
+
+  <div>
+    <label for="cvv">CVV</label>
+    <%= form.text_field :cvv, name: 'payment_details[cvv]' %>
+  </div>
+
+  <%= form.submit 'Pay Now' %>
+<% end %>
+
+<!-- Display messages for success/failure -->
+<% if @message %>
+  <p><%= @message %></p>
+<% end %>

@@ -1,0 +1,45 @@
+<h1>Complaint Form</h1>
+
+<%= form_with(model: @complaint, url: clients_complaints_path, local: true, class: "needs-validation") do |form| %>
+  <% if @complaint.errors.any? %>
+    <div id="error_explanation" class="alert alert-danger">
+      <h2><%= pluralize(@complaint.errors.count, "error") %> prohibited this complaint from being saved:</h2>
+      <ul>
+        <% @complaint.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :name, class: "form-label" %>
+    <%= form.text_field :name, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :email, class: "form-label" %>
+    <%= form.email_field :email, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :product_name, class: "form-label" %>
+    <%= form.text_field :product_name, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :product_link, class: "form-label" %>
+    <%= form.text_field :product_link, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :complaint_text, class: "form-label" %>
+    <%= form.text_area :complaint_text, class: "form-control" %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Submit Complaint", class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<%= link_to 'Back to complaints', clients_complaints_path, class: 'btn btn-secondary mt-2' %>

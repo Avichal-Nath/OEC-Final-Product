@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Womens Wear</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      color: #f5f5f5;
+      background-color: #1a1a1a;
+    }
+
+    .navbar, .footer {
+      background-color: #b71c1c;
+    }
+
+    .btn-custom {
+      background-color: #b71c1c;
+      color: #fff;
+      width: 100%;
+    }
+
+    .btn-custom:hover {
+      background-color: #f5f5f5;
+      color: #b71c1c;
+    }
+
+    .card {
+      background-color: #333;
+      border: none;
+      text-align: center;
+    }
+
+    .footer-link {
+      color: #f5f5f5;
+      text-decoration: none;
+    }
+
+    .footer-link:hover {
+      text-decoration: underline;
+    }
+
+    .section-title {
+      text-transform: uppercase;
+      margin: 1rem 0;
+      border-bottom: 2px solid #b71c1c;
+      padding-bottom: 5px;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+
+    .filter-menu {
+      position: relative;
+      margin: 2rem 0;
+    }
+
+    .filter-menu .filter-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #343a40;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      z-index: 1000;
+      width: 300px;
+      padding: 15px;
+    }
+
+    .filter-menu .filter-dropdown.active {
+      display: block;
+    }
+
+    .filter-menu .filter-btn {
+      background-color: #b71c1c;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .filter-menu .filter-btn:hover {
+      background-color: #f5f5f5;
+      color: #b71c1c;
+    }
+
+    .filter-menu h5 {
+      margin-top: 0;
+    }
+
+    #price-range {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .slider {
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    .circular_item {
+      border-radius: 50%;
+      border: 2px solid #b71c1c;
+      padding: 20px;
+      text-align: center;
+      margin: 10px;
+      color: #fff;
+      background-color: #333;
+    }
+
+    .circular_item a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .circular_item a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 576px) {
+      .navbar-brand {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="#">Oxygen Exclusive Casuals</a>
+    <!-- Add additional navbar content if needed -->
+  </nav>
+
+  <!-- Womens Wear Section -->
+  <section aria-labelledby="womens-wear" class="position-relative">
+    <div class="section-title" id="womens-wear">
+      <h2>Womens Wear</h2>
+    </div>
+
+    <div class="d-flex justify-content-center mb-4">
+      <div class="circular_item mx-3">
+        <%= link_to 'Dress', '#' %>
+      </div>
+      <div class="circular_item mx-3">
+        <%= link_to 'Top', '#' %>
+      </div>
+      <div class="circular_item mx-3">
+        <%= link_to 'Jeans', '#' %>
+      </div>
+      <div class="circular_item mx-3">
+        <%= link_to 'Skirt', '#' %>
+      </div>
+    </div>
+
+    <div class="filter-menu">
+      <button class="filter-btn" onclick="toggleFilterDropdown()">Filter <i class="bi bi-funnel filter-icon"></i></button>
+      <div class="filter-dropdown">
+        <button class="close-filter-panel" onclick="toggleFilterDropdown()"><i class="bi bi-x"></i></button>
+        <h5>Filter Products</h5>
+        <h6>Product</h6>
+        <div class="form-check">
+          <%= check_box_tag 'dress' %>
+          <%= label_tag 'dressCheck', 'Dress', class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= check_box_tag 'top' %>
+          <%= label_tag 'topCheck', 'Top', class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= check_box_tag 'jeans' %>
+          <%= label_tag 'jeansCheck', 'Jeans', class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= check_box_tag 'skirt' %>
+          <%= label_tag 'skirtCheck', 'Skirt', class: 'form-check-label' %>
+        </div>
+        <h6>Color</h6>
+        <div class="form-check">
+          <%= check_box_tag 'black' %>
+          <%= label_tag 'blackCheck', 'Black', class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= check_box_tag 'blue' %>
+          <%= label_tag 'blueCheck', 'Blue', class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= check_box_tag 'green' %>
+          <%= label_tag 'greenCheck', 'Green', class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= check_box_tag 'white' %>
+          <%= label_tag 'whiteCheck', 'White', class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= check_box_tag 'grey' %>
+          <%= label_tag 'greyCheck', 'Grey', class: 'form-check-label' %>
+        </div>
+        <h6>Size</h6>
+        <div class="form-check">
+          <%= check_box_tag 's' %>
+          <%= label_tag 'sCheck', 'S', class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= check_box_tag 'm' %>
+          <%= label_tag 'mCheck', 'M', class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= check_box_tag 'l' %>
+          <%= label_tag 'lCheck', 'L', class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= check_box_tag 'xl' %>
+          <%= label_tag 'xlCheck', 'XL', class: 'form-check-label' %>
+        </div>
+        <h6>Price Range</h6>
+        <div id="price-range">
+          <input type="range" class="slider" min="0" max="100" value="50" id="min-price" name="min_price">
+          <input type="range" class="slider" min="0" max="100" value="100" id="max-price" name="max_price">
+          <div>
+            Min: $<span id="min-price-display">0</span>
+            Max: $<span id="max-price-display">100</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Cards -->
+    <div class="container mt-4">
+      <div class="row">
+        <% if @products.present? %>
+          <% @products.each do |product| %>
+            <div class="col-md-3 mb-4">
+              <div class="card">
+                <%= image_tag product.image, class: 'card-img-top' if product.image.attached? %>
+                <div class="card-body">
+                  <h5 class="card-title"><%= product.name %></h5>
+                  <p class="card-text">$<%= product.price %></p>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p>No products available for women's wear.</p>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer mt-auto py-3 text-center">
+    <p>&copy; 2024 Oxygen Exclusive Casuals</p>
+    <p>
+      <%= link_to 'About Us', '#', class: 'footer-link' %> |
+      <%= link_to 'Contact Us', '#', class: 'footer-link' %>
+    </p>
+  </footer>
+
+  <script>
+    function toggleFilterDropdown() {
+      const filterDropdown = document.querySelector('.filter-dropdown');
+      filterDropdown.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<%= form_with model: @product, local: true, html: { class: 'product-form' }, id: 'new_product_form' do |form| %>
+
+  <style>
+    .product-preview {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 300px;
+      z-index: 1000;
+    }
+
+    .card {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .error-message {
+      color: red;
+      font-size: 0.875em;
+    }
+
+    .is-invalid {
+      border-color: red;
+    }
+  </style>
+
+  <div class="container">
+    <h1 class="text-center mb-4"><%= @product.new_record? ? 'Add New Product' : 'Edit Product' %></h1>
+
+    <!-- Back to Products Button -->
+    <div class="mb-4">
+      <%= link_to 'Back to Products', admin_products_path, class: 'btn btn-secondary' %>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6 col-sm-12 mb-3">
+        <div class="form-group">
+          <%= form.label :name, class: 'form-label' %>
+          <%= form.text_field :name, class: 'form-control', id: 'product-name' %>
+        </div>
+      </div>
+      
+      <div class="col-md-6 col-sm-12 mb-3">
+        <div class="form-group">
+          <%= form.label :price, class: 'form-label' %>
+          <%= form.number_field :price, step: 0.01, class: 'form-control', id: 'product-price' %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= form.label :description, class: 'form-label' %>
+      <%= form.text_area :description, class: 'form-control', rows: 4, id: 'product-description' %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= form.label :image, "Upload Image", class: 'form-label' %>
+      <%= form.file_field :image, class: 'form-control', id: 'product-image' %>
+    </div>
+
+    <h3 class="mb-3">Variants</h3>
+    <div id="variants-container" class="mb-4">
+      <table class="table table-striped" id="variants-table">
+        <thead>
+          <tr>
+            <th>Color</th>
+            <th>Size</th>
+            <th>Quantity</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= form.fields_for :variants do |variant_form| %>
+            <tr class="variant-fields">
+              <td>
+                <%= variant_form.select :color,
+                  ['None', 'Red', 'Black', 'White', 'Brown', 'Yellow', 'Multicolor', 'Navy Blue', 'Blue', 'Hot pink', 'Peach'], 
+                  {},
+                  class: 'form-control',
+                  id: "variant-color-#{variant_form.index}" %>
+              </td>
+              <td>
+                <%= variant_form.select :size,
+                  ['None', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
+                  {},
+                  class: 'form-control',
+                  id: "variant-size-#{variant_form.index}" %>
+              </td>
+              <td>
+                <%= variant_form.number_field :quantity,
+                  class: 'form-control',
+                  id: "variant-quantity-#{variant_form.index}",
+                  min: '1',
+                  step: '1',
+                  title: 'Please enter a positive number' %>
+              </td>
+              <td>
+                <%= link_to 'Remove', '#', class: 'remove-variant btn btn-danger btn-sm' %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <button type="button" id="add-variant" class="btn btn-primary">Add Another Variant</button>
+
+    <% if @product.errors.any? %>
+      <div class="alert alert-danger mt-3">
+        <ul>
+          <% @product.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group text-center mt-3">
+      <%= form.submit @product.new_record? ? "Create Product" : "Update Product", class: 'btn btn-success', id: 'submit-button' %>
+    </div>
+  </div>
+
+  <!-- Dynamic Card Preview -->
+  <div class="product-preview">
+    <h3>Product Preview</h3>
+    <div class="card">
+      <%= image_tag @product.image, alt: @product.name, class: 'card-img-top' if @product.image.attached? %>
+      <div class="card-body">
+        <h5 class="card-title"><%= @product.name %></h5>
+        <p class="card-text"><%= @product.description %></p>
+        <p class="card-text">Price: <%= number_to_currency(@product.price) %></p>
+        <div class="variants">
+          <% @product.variants.each do |variant| %>
+            <div class="variant">
+              <p><strong>Color:</strong> <%= variant.color %></p>
+              <p><strong>Size:</strong> <%= variant.size %></p>
+              <p><strong>Quantity:</strong> <%= variant.quantity %></p>
+            </div>
+          <% end %>
+        </div>
+        <a href="#" class="btn btn-danger">Add to Cart</a>
+        <a href="#" class="btn btn-primary">View Product</a>
+      </div>
+    </div>
+  </div>
+
+<% end %>
+
+<!-- Template for New Variant Row -->
+<script type="text/template" id="variant-template">
+  <tr class="variant-fields">
+    <td>
+      <select name="product[variants_attributes][][color]" class="form-control">
+        <option value="None">None</option>
+        <option value="Red">Red</option>
+        <option value="Black">Black</option>
+        <option value="White">White</option>
+        <option value="Brown">Brown</option>
+        <option value="Yellow">Yellow</option>
+        <option value="Multicolor">Multicolor</option>
+        <option value="Navy Blue">Navy Blue</option>
+        <option value="Blue">Blue</option>
+        <option value="Hot pink">Hot pink</option>
+        <option value="Peach">Peach</option>
+      </select>
+    </td>
+    <td>
+      <select name="product[variants_attributes][][size]" class="form-control">
+        <option value="None">None</option>
+        <option value="S">S</option>
+        <option value="M">M</option>
+        <option value="L">L</option>
+        <option value="XL">XL</option>
+        <option value="2XL">2XL</option>
+        <option value="3XL">3XL</option>
+        <option value="4XL">4XL</option>
+      </select>
+    </td>
+    <td><input type="number" name="product[variants_attributes][][quantity]" class="form-control" /></td>
+    <td><button type="button" class="remove-variant btn btn-danger btn-sm">Remove Variant</button></td>
+  </tr>
+</script>
+
+<script>
+document.addEventListener('turbolinks:load', () => {
+  const form = document.querySelector('.product-form');
+  const submitButton = document.getElementById('submit-button');
+  const addVariantButton = document.getElementById('add-variant');
+  const variantsTable = document.getElementById('variants-table');
+  const variantTemplate = document.getElementById('variant-template').innerHTML;
+
+  // Function to handle adding a new variant row
+  const addVariantHandler = () => {
+    const newRow = document.createElement('tr');
+    newRow.classList.add('variant-fields');
+    newRow.innerHTML = variantTemplate;
+    variantsTable.querySelector('tbody').appendChild(newRow);
+
+    // Attach event listener to remove button in the new row
+    const removeButton = newRow.querySelector('.remove-variant');
+    removeButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      newRow.remove();
+    });
+  };
+
+  // Attach event listener for adding a new variant
+  addVariantButton.addEventListener('click', addVariantHandler);
+
+  // Function to create and display error messages
+  const createErrorMessage = (message) => {
+    const errorDiv = document.createElement('div');
+    errorDiv.classList.add('error-message');
+    errorDiv.textContent = message;
+    return errorDiv;
+  };
+
+  // Function to show error messages
+  const showError = (fieldId, message) => {
+    const field = document.getElementById(fieldId);
+    const errorDiv = createErrorMessage(message);
+    field.classList.add('is-invalid');
+    field.parentElement.appendChild(errorDiv);
+  };
+
+  // Validate form on submit
+  submitButton.addEventListener('click', (event) => {
+    let valid = true;
+
+    // Remove all previous error messages and invalid classes
+    document.querySelectorAll('.error-message').forEach((el) => el.remove());
+    document.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
+
+    const name = document.getElementById('product-name').value.trim();
+    const price = parseFloat(document.getElementById('product-price').value);
+    const description = document.getElementById('product-description').value.trim();
+    const image = document.getElementById('product-image').files[0];
+
+    // Validate name
+    if (!name) {
+      showError('product-name', 'Name is required.');
+      valid = false;
+    }
+
+    // Validate price
+    if (isNaN(price) || price <= 0) {
+      showError('product-price', 'Price must be a positive number.');
+      valid = false;
+    }
+
+    // Validate description
+    if (!description) {
+      showError('product-description', 'Description is required.');
+      valid = false;
+    }
+
+    // Validate image
+    if (!image) {
+      showError('product-image', 'Image is required.');
+      valid = false;
+    }
+
+    // Validate variants
+    let hasValidVariants = false;
+    document.querySelectorAll('.variant-fields').forEach((row) => {
+      const color = row.querySelector('select[name$="[color]"]').value;
+      const size = row.querySelector('select[name$="[size]"]').value;
+      const quantity = parseInt(row.querySelector('input[name$="[quantity]"]').value, 10);
+
+      if (color !== 'None' && size !== 'None' && quantity > 0) {
+        hasValidVariants = true;
+      } else {
+        row.querySelectorAll('.form-control').forEach((field) => field.classList.add('is-invalid'));
+        row.querySelector('.error-message')?.remove() || row.appendChild(createErrorMessage('Please fill out all variant fields correctly.'));
+      }
+    });
+
+    if (!hasValidVariants) {
+      valid = false;
+    }
+
+    // Show confirmation dialog if the form is valid
+    if (valid) {
+      console.log("Form is valid, showing confirmation prompt."); // Debugging line
+      const confirmation = confirm("Are you sure you want to create this product?");
+      if (!confirmation) {
+        event.preventDefault(); // Prevent form submission if not confirmed
+        console.log("Form submission cancelled."); // Debugging line
+      }
+    } else {
+      console.log("Form is invalid, preventing submission."); // Debugging line
+      event.preventDefault(); // Prevent form submission if form is invalid
+    }
+  });
+
+  // Attach event listeners to existing remove buttons
+  const removeVariantButtons = document.querySelectorAll('.remove-variant');
+  removeVariantButtons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      const row = button.closest('.variant-fields');
+      row.remove();
+    });
+  });
+});
+</script>
+
+

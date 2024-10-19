@@ -1,0 +1,43 @@
+<!-- app/views/layouts/_footer.html.erb -->
+
+<div class="footer">
+  <div class="container text-center">
+    <p>&copy; <%= Time.current.year %> Oxygen Exclusive Casuals. All rights reserved.</p>
+    <ul class="list-inline">
+      <li class="list-inline-item"><%= link_to 'Privacy Policy', '#', class: 'text-white' %></li>
+      <li class="list-inline-item"><%= link_to 'Terms of Service', '#', class: 'text-white' %></li>
+      <li class="list-inline-item"><%= link_to 'Support', '#', class: 'text-white' %></li>
+    </ul>
+  </div>
+</div>
+
+<style>
+  .footer {
+    background-color: #D30000;
+    color: white; /* Corrected property for text color */
+    text-align: center; /* Center-align the text */
+    padding: 20px 0; /* Added padding for spacing */
+  }
+
+  .footer .list-inline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer .list-inline-item {
+    margin-right: 10px;
+  }
+
+  .footer .list-inline-item:last-child {
+    margin-right: 0;
+  }
+
+  .footer .text-white {
+    color: white;
+  }
+
+  .footer .text-white:hover {
+    color: #f8c146;
+  }
+</style>

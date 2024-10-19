@@ -1,0 +1,8 @@
+<div class="card">
+  <%= image_tag product.image, class: 'card-img-top' %>
+  <div class="card-body">
+    <h5 class="card-title"><%= product.name %></h5>
+    <p class="card-text"><%= number_to_currency(product.price) %></p>
+    <%= link_to 'View Product', clients_product_path(product), class: 'btn btn-primary' %>
+  </div>
+</div>

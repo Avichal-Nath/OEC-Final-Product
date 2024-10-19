@@ -1,0 +1,10 @@
+<div class="container">
+  <h1>All Products</h1>
+  <div class="row">
+    <% @products.each do |product| %>
+      <div class="col-md-3">
+        <%= render partial: 'clients/products/product_card', locals: { product: product } %>
+      </div>
+    <% end %>
+  </div>
+</div>

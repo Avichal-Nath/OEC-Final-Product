@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product Details</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+  <%= javascript_include_tag 'https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js', 'data-turbolinks-track': 'reload' %>
+  <style>
+    .product-card {
+      width: 300px; /* Set a fixed width for the card */
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s, box-shadow 0.3s;
+      margin-bottom: 30px;
+      margin-left: auto; /* Center the card horizontally */
+      margin-right: auto; /* Center the card horizontally */
+    }
+    .product-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    .product-card img {
+      width: 100%;
+      height: auto;
+    }
+    .product-card-body {
+      padding: 15px;
+      background: #fff;
+    }
+    .product-card-title {
+      color: #000;
+    }
+    .product-card-price {
+      color: #d9534f;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+    .product-card-description {
+      color: #333;
+    }
+    .btn-custom {
+      background-color: #d9534f;
+      color: #fff;
+      border: none;
+    }
+    .btn-custom:hover {
+      background-color: #c9302c;
+    }
+    .product-details {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Product Details</h1>
+
+    <div class="row">
+      <div class="col-md-8 product-details">
+        <%= image_tag @product.image, alt: @product.name, class: 'img-fluid' %>
+        
+        <div class="mt-3">
+          <strong>Name:</strong> <%= @product.name %>
+        </div>
+
+        <div class="mt-2">
+          <strong>Description:</strong> <%= @product.description %>
+        </div>
+
+        <div class="mt-2">
+          <strong>Price:</strong> <%= number_to_currency(@product.price) %>
+        </div>
+
+        <div class="mt-3">
+          <strong>Available Colors and Sizes:</strong>
+          <table class="table table-bordered mt-2">
+            <thead>
+              <tr>
+                <th>Color</th>
+                <th>Size</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @product.variants.each do |variant| %>
+                <tr>
+                  <td><%= variant.color %></td>
+                  <td><%= variant.size %></td>
+                  <td><%= variant.quantity %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-3">
+          <%= link_to 'Back to Products', admin_products_path, class: 'btn btn-secondary' %>
+          <%= form_with url: admin_product_path(@product), method: :delete, local: true do %>
+            <%= submit_tag 'Delete', data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="product-card">
+        <h3 style="text-align:center;">Client View</h3>
+          <% if @product.image.attached? %>
+            <%= image_tag @product.image, alt: @product.name, class: 'card-img-top' %>
+          <% end %>
+          <div class="product-card-body">
+            <h5 class="product-card-title"><%= @product.name %></h5>
+            <p class="product-card-price"><%= number_to_currency(@product.price) %></p>
+            <p class="product-card-description"><%= @product.description %></p>
+            <a href="#" class="btn btn-custom">Add to Cart</a>  <!-- Add to Cart button -->
+            <a href="<%= admin_product_path(@product) %>" class="btn btn-outline-dark mt-2">View Product</a>  <!-- View Product button -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

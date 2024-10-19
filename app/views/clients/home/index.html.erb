@@ -1,0 +1,131 @@
+<div class="container my-5">
+  <h1>Welcome to Oxygen Exclusive Web page</h1>
+  
+  <!-- Featured Products Section -->
+  <h2 class="section-title">Featured Products</h2>
+  <div class="row">
+    <% @featured_products.each do |product| %>
+      <div class="col-md-3">
+        <div class="card">
+          <%= image_tag product.image, class: 'card-img-top' %>
+          <div class="card-body">
+            <h5 class="card-title"><%= product.name %></h5>
+            <p class="card-text"><%= number_to_currency(product.price) %></p>
+            <%= link_to 'View Product', clients_product_path(product), class: 'btn btn-custom' %>
+            <%= button_to 'Add To Cart', add_item_to_cart_clients_cart_path(product_id: product.id), method: :post, class: 'btn btn-cart' %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- On Sale Section -->
+  <h2 class="section-title mt-4">On Sale</h2>
+  <div class="row">
+    <!-- Placeholder for On Sale Products -->
+    <% 4.times do %> <!-- Display 4 placeholder cards -->
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">On Sale Item</h5>
+            <p class="card-text">Placeholder Price</p>
+            <button class="btn btn-secondary" disabled>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="col-md-2 d-flex align-items-center">
+      <%= link_to 'View More', '#', class: 'btn btn-primary' %>
+    </div>
+  </div>
+
+  <!-- Best Selling Section -->
+  <h2 class="section-title mt-4">Best Selling</h2>
+  <div class="row">
+    <!-- Placeholder for Best Selling Products -->
+    <% 4.times do %> <!-- Display 4 placeholder cards -->
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">Best Selling Item</h5>
+            <p class="card-text">Placeholder Price</p>
+            <button class="btn btn-secondary" disabled>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="col-md-2 d-flex align-items-center">
+      <%= link_to 'View More', '#', class: 'btn btn-primary' %>
+    </div>
+  </div>
+
+  <!-- New Arrivals Section -->
+  <h2 class="section-title mt-4">New Arrivals</h2>
+  <div class="row">
+    <!-- Placeholder for New Arrivals -->
+    <% 4.times do %> <!-- Display 4 placeholder cards -->
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">New Arrival Item</h5>
+            <p class="card-text">Placeholder Price</p>
+            <button class="btn btn-secondary" disabled>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="col-md-2 d-flex align-items-center">
+      <%= link_to 'View More', '#', class: 'btn btn-primary' %>
+    </div>
+  </div>
+
+  <!-- Womens Wear Section -->
+  <h2 class="section-title mt-4">Womens Wear</h2>
+  <div class="row">
+    <!-- Placeholder for Womens Wear -->
+    <% 4.times do %> <!-- Display 4 placeholder cards -->
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">Womens Wear Item</h5>
+            <p class="card-text">Placeholder Price</p>
+            <button class="btn btn-secondary" disabled>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="col-md-2 d-flex align-items-center">
+      <%= link_to 'View More', '#', class: 'btn btn-primary' %>
+    </div>
+  </div>
+
+  <!-- Mens Wear Section -->
+  <h2 class="section-title mt-4">Mens Wear</h2>
+  <div class="row">
+    <!-- Placeholder for Mens Wear -->
+    <% 4.times do %> <!-- Display 4 placeholder cards -->
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">Mens Wear Item</h5>
+            <p class="card-text">Placeholder Price</p>
+            <button class="btn btn-secondary" disabled>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="col-md-2 d-flex align-items-center">
+      <%= link_to 'View More', '#', class: 'btn btn-primary' %>
+    </div>
+  </div>
+
+  <%# <!-- Footer -->
+  <footer class="footer">
+    <div class="container text-center">
+      <a href="#" class="footer-link mx-3">Contact Us</a>
+      <a href="#" class="footer-link mx-3">About Us</a>
+      <a href="#" class="footer-link mx-3">Copyright</a>
+      <a href="#" class="footer-link mx-3">Follow Us <i class="fab fa-facebook"></i></a>
+    </div>
+  </footer> %>
+</div>

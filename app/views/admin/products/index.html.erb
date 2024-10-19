@@ -1,0 +1,222 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <a class="navbar-brand" href="#"><%= image_tag('logo.png', alt: 'Brand Logo', class: 'd-inline-block align-top', style: 'height: 30px;') %> Admin Panel</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item <%= 'active' if controller_name == 'products' %>">
+        <%= link_to 'Products', admin_products_path, class: 'nav-link' %>
+      </li>
+      <li class="nav-item <%= 'active' if controller_name == 'orders' %>">
+        <%= link_to 'Orders', admin_orders_path, class: 'nav-link' %>
+      </li>
+      <li class="nav-item <%= 'active' if controller_name == 'users' %>">
+        <%= link_to 'Users', admin_users_path, class: 'nav-link' %>
+      </li>
+      <li class="nav-item">
+        <%= link_to "Sign Out", destroy_admin_admin_session_path, method: :delete, class: "nav-link" %>
+      </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+
+
+
+<h1 class="text-center mb-4">Products</h1>
+
+<div class="container mb-4">
+  <%= form_with url: admin_products_path, method: :get, local: true, id: 'filter-form' do |form| %>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <%= form.label :query, "Search:" %>
+        <%= form.text_field :query, class: "form-control", placeholder: "Search for products...", value: params[:query] %>
+      </div>
+
+      <div class="col-md-4">
+          <%= form.label :category, "Filter by Category:" %>
+          <%= form.select :category, options_for_select(@categories.collect { |c| [c.name, c.id] }, params[:category]), { include_blank: 'All' }, { class: 'form-control' } %>
+      </div>
+
+
+      <div class="col-md-4">
+        <%= form.label :color, "Filter by Color:" %>
+        <%= form.select :color, options_for_select(@colors, params[:color]), { include_blank: 'All' }, { class: 'form-control' } %>
+      </div>
+
+
+      <div class="col-md-4">
+        <%= form.label :size, "Filter by Size:" %>
+        <%= form.select :size, options_for_select(@sizes, params[:size]), { include_blank: 'All' }, { class: 'form-control' } %>
+      </div>
+
+      <div class="col-md-4">
+        <%= form.label :min_price, "Min Price:" %>
+        <%= form.number_field :min_price, value: params[:min_price], class: 'form-control' %>
+      </div>
+
+      <div class="col-md-4">
+        <%= form.label :max_price, "Max Price:" %>
+        <%= form.number_field :max_price, value: params[:max_price], class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <%= form.submit "Apply Filters", class: 'btn btn-primary' %>
+      <%= link_to 'Reset Filters', admin_products_path, class: 'btn btn-secondary ml-2' %>
+    </div>
+  <% end %>
+</div>
+
+<% if flash[:alert] %>
+  <div class="alert alert-danger text-center">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<div class="text-center mt-4">
+  <%= link_to 'Add New Product', new_admin_product_path, class: 'btn btn-primary' %>
+</div>
+
+<div class="container">
+  <div class="row">
+    <% if @products.any? %>
+      <% @products.each do |product| %>
+        <div class="col-md-4 col-sm-6 mb-4">
+          <div class="card h-100 product-card" style="border-color: red; background-color: black;">
+            <% if product.image.attached? %>
+              <%= image_tag product.image, class: "card-img-top", alt: product.name, style: "height: 200px; object-fit: cover;" %>
+            <% else %>
+              <img src="https://via.placeholder.com/300x200?text=No+Image" class="card-img-top" alt="No Image" style="height: 200px; object-fit: cover;">
+            <% end %>
+            <div class="card-body text-white">
+              <h5 class="card-title" style="color: red;"><%= product.name %></h5>
+              <p class="card-text"><%= product.description %></p>
+              <p class="card-text">Price: <%= number_to_currency(product.price) %></p>
+              <div class="variants">
+                <h6 style="color: red;">Available Variants:</h6>
+                <% product.variants.each do |variant| %>
+                  <p class="card-text">
+                    <strong>Color:</strong> <%= variant.color %> |
+                    <strong>Size:</strong> <%= variant.size %> |
+                    <strong>Quantity:</strong> <%= variant.quantity %>
+                  </p>
+                <% end %>
+              </div>
+            </div>
+            <div class="card-footer bg-dark text-center">
+              <%= link_to 'View Product', admin_product_path(product), class: 'btn btn-outline-light btn-sm mx-1' %>
+              <%= link_to 'Edit', edit_admin_product_path(product), class: 'btn btn-outline-light btn-sm mx-1' %>
+              <%= form_with url: admin_product_path(product), method: :delete, local: true do %>
+                <%= submit_tag 'Delete', data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+              <% end %>
+              <%= link_to 'Remove Image', remove_image_admin_product_path(product), method: :delete, data: { confirm: 'Remove image?' }, class: 'btn btn-warning btn-sm mx-1', remote: true %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="col-12 text-center">
+        <p class="text-white">No products found matching your filters.</p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+
+<footer class="bg-dark text-white text-center py-3 mt-4">
+  <div class="container">
+    <p>&copy; <%= Time.current.year %> Your Company. All rights reserved.</p>
+    <ul class="list-inline">
+      <li class="list-inline-item"><%= link_to 'Privacy Policy', '#', class: 'text-white' %></li>
+      <li class="list-inline-item"><%= link_to 'Terms of Service', '#', class: 'text-white' %></li>
+      <li class="list-inline-item"><%= link_to 'Support', '#', class: 'text-white' %></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Ensure this code runs only once
+    if (!document.querySelector('#add-variant')) return;
+
+    const addVariantButton = document.getElementById('add-variant');
+    const variantsContainer = document.getElementById('variants-container');
+    const variantTemplate = document.getElementById('variant-template');
+
+    addVariantButton.addEventListener('click', function() {
+      const newVariant = variantTemplate.cloneNode(true);
+      newVariant.classList.remove('d-none');
+      variantsContainer.appendChild(newVariant);
+    });
+  });
+</script>
+
+
+<style>
+  .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 16px rgba(255, 0, 0, 0.6);
+    transform: translateY(-5px);
+  }
+
+  .btn-primary {
+    background-color: red;
+    border-color: red;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: black;
+    border-color: black;
+    color: red;
+  }
+
+  .btn-outline-light {
+    border-color: white;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .btn-outline-light:hover {
+    background-color: red;
+    border-color: red;
+    color: white;
+  }
+
+  .btn-danger {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .btn-danger:hover {
+    background-color: black;
+    color: red;
+  }
+
+  .btn-warning {
+    background-color: orange;
+    border-color: orange;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .btn-warning:hover {
+    background-color: red;
+    color: white;
+  }
+
+  .product-card {
+    transition: transform 0.3s ease;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px) scale(1.02);
+  }
+</style>

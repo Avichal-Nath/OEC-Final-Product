@@ -1,0 +1,24 @@
+<!-- app/views/clients/products/index.html.erb -->
+<div class="container mt-4">
+  <h1>Products</h1>
+
+  <% if @products.any? %>
+    <div class="row">
+      <% @products.each do |product| %>
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <%= image_tag product.image, class: "card-img-top" %>
+            <div class="card-body">
+              <h5 class="card-title"><%= product.name %></h5>
+              <p class="card-text"><%= truncate(product.description, length: 100) %></p>
+              <p class="card-text"><strong><%= number_to_currency(product.price) %></strong></p>
+              <%= link_to 'View Product', clients_product_path(product), class: "btn btn-primary" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p>No products found matching your search.</p>
+  <% end %>
+</div>

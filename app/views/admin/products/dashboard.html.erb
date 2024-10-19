@@ -1,0 +1,5 @@
+<h2>Most Sold Product</h2>
+<%= Product.most_sold.name %> (Total Sold: <%= Product.most_sold.variants.joins(:sales).sum(:quantity) %>)
+
+<h2>Least Sold Product</h2>
+<%= Product.least_sold.name %> (Total Sold: <%= Product.least_sold.variants.joins(:sales).sum(:quantity) %>)

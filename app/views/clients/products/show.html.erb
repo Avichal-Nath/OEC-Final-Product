@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product Details</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+  <%= javascript_include_tag 'https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js', 'data-turbolinks-track': 'reload' %>
+  <style>
+    .product-details-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 2rem;
+    }
+    .product-image img {
+      width: 100%;
+      height: auto;
+      max-width: 400px;
+      border-radius: 8px;
+    }
+    .product-info {
+      padding: 1rem;
+    }
+    .product-info h2 {
+      font-size: 1.75rem;
+      font-weight: bold;
+    }
+    .product-info label {
+      font-weight: bold;
+      margin-top: 1rem;
+      display: block;
+    }
+    .product-info .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .product-info .subtotal {
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+    .product-info .btn-custom {
+      margin-top: 1rem;
+      background-color: #d9534f;
+      color: #fff;
+      border: none;
+    }
+    .product-info .btn-custom:hover {
+      background-color: #c9302c;
+    }
+    @media (min-width: 768px) {
+      .product-details-container {
+        flex-direction: row;
+        justify-content: center;
+        gap: 2rem;
+      }
+      .product-image, .product-info {
+        flex: 1;
+        max-width: 500px;
+      }
+    }
+    .star-rating {
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    .star {
+      font-size: 1.5rem;
+      color: #d9534f; /* Color for hollow stars */
+      margin-right: 0.2rem;
+    }
+    .star.filled {
+      color: #ffd700; /* Gold color for filled stars */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Women</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= @product.name %></li>
+      </ol>
+    </nav>
+
+    <div class="product-details-container">
+      <!-- Product Image -->
+      <div class="product-image">
+        <%= image_tag @product.image, alt: @product.name, class: 'img-fluid' %>
+      </div>
+
+      <!-- Product Information -->
+      <div class="product-info">
+        <h2><%= @product.name %></h2>
+        <p><strong>Price:</strong> <%= number_to_currency(@product.price) %></p>
+        <p><strong>Quantity Available:</strong> <span id="quantity-available"><%= @product.variants.sum(:quantity) %></span></p>
+        <p><strong>Description:</strong> <%= @product.description %></p>
+
+        <!-- Color Dropdown -->
+        <label for="color">Color:</label>
+        <select id="color" class="form-select" onchange="updateAvailableSizes()">
+          <% @product.variants.where('quantity > 0').distinct.pluck(:color).each do |color| %>
+            <option value="<%= color %>"><%= color %></option>
+          <% end %>
+        </select>
+
+        <!-- Size Dropdown -->
+        <label for="size">Size:</label>
+        <select id="size" class="form-select" onchange="updateMaxQuantity()">
+          <!-- Sizes will be dynamically populated based on color selection -->
+        </select>
+
+        <!-- Quantity Control -->
+        <label for="quantity">Quantity:</label>
+        <div class="quantity-controls">
+          <button class="btn btn-outline-secondary" onclick="updateQuantity(-1)">-</button>
+          <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control" style="width: 60px;">
+          <button class="btn btn-outline-secondary" onclick="updateQuantity(1)">+</button>
+        </div>
+
+        <p class="subtotal"><strong>Subtotal:</strong> <span id="subtotal"><%= number_to_currency(@product.price) %></span></p>
+
+        <!-- Star Rating -->
+        <div class="star-rating">
+          <span data-value="1" class="star">&#9734;</span>
+          <span data-value="2" class="star">&#9734;</span>
+          <span data-value="3" class="star">&#9734;</span>
+          <span data-value="4" class="star">&#9734;</span>
+          <span data-value="5" class="star">&#9734;</span>
+        </div>
+
+        <!-- Add to Cart Form -->
+        <%= form_with url: add_item_to_cart_clients_cart_path(product_id: @product.id), method: :post, local: true do |f| %>
+          <%= f.hidden_field :color, value: '', id: 'selected-color' %>
+          <%= f.hidden_field :size, value: '', id: 'selected-size' %>
+          <%= f.hidden_field :quantity, value: 1, id: 'selected-quantity' %>
+          <%= f.hidden_field :rating, value: 0, id: 'selected-rating' %> <!-- Hidden field to store the rating -->
+          <%= f.submit 'Add to Cart', class: 'btn btn-custom' %>
+        <% end %>
+
+        <%= link_to 'Back', clients_products_path, class: 'btn btn-outline-secondary ml-2' %>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const price = <%= @product.price %>;
+    const variants = <%= @product.variants.to_json.html_safe %>;
+
+    function updateAvailableSizes() {
+      const color = document.getElementById('color').value;
+      const sizeSelect = document.getElementById('size');
+
+      // Filter sizes based on selected color
+      const availableSizes = [...new Set(variants.filter(v => v.color === color).map(v => v.size))];
+      sizeSelect.innerHTML = '';
+      availableSizes.forEach(size => {
+        sizeSelect.innerHTML += `<option value="${size}">${size}</option>`;
+      });
+
+      document.getElementById('selected-color').value = color;
+      updateMaxQuantity();
+    }
+
+    function updateMaxQuantity() {
+      const color = document.getElementById('color').value;
+      const size = document.getElementById('size').value;
+      const quantityInput = document.getElementById('quantity');
+      const quantityAvailable = document.getElementById('quantity-available');
+
+      // Find the matching variant and set max quantity based on availability
+      const variant = variants.find(v => v.color === color && v.size === size);
+      const maxQuantity = variant ? variant.quantity : 1;
+      quantityInput.max = maxQuantity;
+      quantityAvailable.innerText = maxQuantity;
+      document.getElementById('selected-size').value = size;
+    }
+
+    function updateQuantity(change) {
+      const quantityInput = document.getElementById('quantity');
+      const subtotalSpan = document.getElementById('subtotal');
+      let quantity = parseInt(quantityInput.value) + change;
+
+      // Ensure quantity does not exceed the max or go below 1
+      if (quantity < 1) quantity = 1;
+      if (quantity > quantityInput.max) quantity = quantityInput.max;
+
+      quantityInput.value = quantity;
+      subtotalSpan.innerText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price * quantity);
+      document.getElementById('selected-quantity').value = quantity;
+    }
+
+    // Initialize star rating functionality
+    document.querySelectorAll('.star-rating .star').forEach(star => {
+      star.addEventListener('click', function() {
+        const ratingValue = this.getAttribute('data-value');
+        const stars = document.querySelectorAll('.star-rating .star');
+
+        // Update the rating based on the clicked star
+        stars.forEach((s, index) => {
+          if (index < ratingValue) {
+            s.classList.add('filled');
+            s.innerHTML = '&#9733;'; // Filled star
+          } else {
+            s.classList.remove('filled');
+            s.innerHTML = '&#9734;'; // Hollow star
+          }
+        });
+
+        // Update the hidden rating field
+        document.getElementById('selected-rating').value = ratingValue;
+      });
+    });
+
+    // Set initial rating based on the existing rating if available
+    document.addEventListener('DOMContentLoaded', function() {
+      updateAvailableSizes();
+    });
+  </script>
+</body>
+</html>

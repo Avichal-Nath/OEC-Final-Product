@@ -1,0 +1,175 @@
+<%= form_with model: @product, url: admin_product_path(@product), local: true, html: { class: 'form-horizontal' } do |form| %>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <%= form.label :name, class: 'control-label text-red' %>
+          <%= form.text_field :name, class: 'form-control border-dark', required: true, minlength: 3 %>
+          <div class="invalid-feedback">
+            Please enter a product name with at least 3 characters.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :description, class: 'control-label text-red' %>
+          <%= form.text_area :description, class: 'form-control border-dark', required: true, minlength: 10 %>
+          <div class="invalid-feedback">
+            Please enter a description with at least 10 characters.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :price, class: 'control-label text-red' %>
+          <%= form.number_field :price, step: 0.01, class: 'form-control border-dark', required: true, min: 0.01 %>
+          <div class="invalid-feedback">
+            Please enter a valid price greater than $0.01.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :image, "Image", class: 'control-label text-red' %>
+          <% if @product.image.attached? %>
+            <div class="img-container">
+              <%= image_tag @product.image, class: 'img-thumbnail' %>
+              <div class="mt-2">
+                <%= link_to 'Remove Image', remove_image_admin_product_path(@product), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: 'Are you sure you want to remove the image?' } %>
+              </div>
+            </div>
+          <% else %>
+            <%= form.file_field :image, class: 'form-control border-dark', accept: 'image/*' %>
+            <div class="invalid-feedback">
+              Please upload a valid image file.
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="text-center text-red">Product Variants</h3>
+    <table class="table table-bordered table-striped">
+      <thead class="bg-dark text-white">
+        <tr>
+          <th>Color</th>
+          <th>Size</th>
+          <th>Quantity</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= form.fields_for :variants do |variant_form| %>
+          <tr>
+            <td><%= variant_form.text_field :color, class: 'form-control border-dark', required: true %></td>
+            <td><%= variant_form.text_field :size, class: 'form-control border-dark', required: true %></td>
+            <td><%= variant_form.number_field :quantity, class: 'form-control border-dark', required: true, min: 1 %></td>
+            <td>
+              <%= link_to 'Remove', '#', class: 'remove_fields btn btn-danger btn-sm', data: { action: 'remove' } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <%= link_to_add_fields "Add Variant", form, :variants, class: 'btn btn-primary mb-4' %>
+
+    <!-- Submit Button -->
+    <div class="form-group text-center">
+      <%= form.submit "Save Product", class: 'btn btn-success btn-lg' %>
+    </div>
+  </div>
+<% end %>
+
+<!-- Styles -->
+<style>
+  .text-red {
+    color: red;
+  }
+
+  .bg-dark {
+    background-color: black;
+  }
+
+  .btn-primary {
+    background-color: red;
+    border-color: red;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background-color: black;
+    border-color: black;
+    color: red;
+  }
+
+  .btn-danger {
+    background-color: black;
+    border-color: black;
+    color: red;
+  }
+
+  .btn-danger:hover {
+    background-color: red;
+    border-color: red;
+    color: white;
+  }
+
+  .btn-success {
+    background-color: black;
+    border-color: black;
+    color: white;
+  }
+
+  .btn-success:hover {
+    background-color: red;
+    border-color: red;
+    color: white;
+  }
+
+  .table thead th {
+    background-color: black;
+    color: white;
+  }
+
+  .table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+  }
+
+  .table tbody tr:nth-child(even) {
+    background-color: #ffffff;
+  }
+
+  .form-horizontal .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-control.border-dark {
+    border-color: black;
+  }
+
+  .img-thumbnail {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid black;
+  }
+
+  .img-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .img-container .btn-danger {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+
+  .invalid-feedback {
+    display: none;
+    color: red;
+    font-size: 0.875rem;
+  }
+
+  .form-control:invalid + .invalid-feedback {
+    display: block;
+  }
+
+</style>
