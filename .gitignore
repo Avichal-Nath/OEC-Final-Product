@@ -5,11 +5,11 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/.bundle
+# /.bundle
 
 # Ignore all environment files (except templates).
-/env*
-!/env*.erb
+# /env*
+# !/env*.erb
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -22,23 +22,25 @@
 !/tmp/pids/
 !/tmp/pids/.keep
 
-# Allow all files under the storage directory, including databases
-# Removed /storage/* so that all files in /storage will be tracked.
-# Now everything in storage/ will be tracked, including the database files.
+# Allow all files under the storage directory.
+# /tmp/storage/*
+# !/tmp/storage/
+# !/tmp/storage/.keep
+# Removed /storage/* so that all files in /storage will be tracked
 
 # Ignore assets and packs
-/public/assets
-/public/packs
-/public/packs-test
+# /public/assets
+# /public/packs
+# /public/packs-test
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
+# /config/master.key
 
 # Ignore node modules and yarn files
-/node_modules
-/yarn-error.log
-yarn-debug.log*
-.yarn-integrity
+# /node_modules
+# /yarn-error.log
+# yarn-debug.log*
+# .yarn-integrity
 
-# Keep the SQLite database files
-!/db/*.sqlite3
+# Keep the SQLite database
+# !/db/*.sqlite3
