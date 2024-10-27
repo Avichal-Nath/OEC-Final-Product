@@ -12,11 +12,26 @@
 </div>
 
 <style>
+  /* Footer stick to bottom styling */
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container {
+    flex: 1;
+  }
+
   .footer {
     background-color: #D30000;
-    color: white; /* Corrected property for text color */
-    text-align: center; /* Center-align the text */
-    padding: 20px 0; /* Added padding for spacing */
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: auto;
   }
 
   .footer .list-inline {

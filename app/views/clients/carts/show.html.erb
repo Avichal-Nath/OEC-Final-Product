@@ -69,27 +69,35 @@
     <!-- Summary Section -->
     <div class="col-md-4">
       <h2>Summary</h2>
-      <table class="table">
-        <tr>
-          <th>Subtotal</th>
-          <td><%= number_to_currency(@cart_items.sum { |item| item.product.price * item.quantity }) %></td>
-        </tr>
-        <tr>
-          <th>Delivery Charges</th>
-          <td>$$</td> <!-- You can replace $$ with the actual shipping logic later -->
-        </tr>
-        <tr>
-          <th>Order Total</th>
-          <td><%= number_to_currency(@cart_items.sum { |item| item.product.price * item.quantity }) %></td> <!-- Placeholder for total logic -->
-        </tr>
-      </table>
+      <% if @cart_items.present? %>
+        <% subtotal = @cart_items.sum { |item| item.product.price * item.quantity } %>
+        <% handling_fee = 10 %>
+        <% total = subtotal + handling_fee %>
 
-      <!-- Proceed To Checkout Button -->
-      <div class="row mt-4">
+        <table class="table">
+          <tr>
+            <th>Subtotal</th>
+            <td><%= number_to_currency(subtotal) %></td>
+          </tr>
+          <tr>
+            <th>Handling Charges</th>
+            <td><%= number_to_currency(handling_fee) %></td>
+          </tr>
+          <tr>
+            <th>Order Total</th>
+            <td><%= number_to_currency(total) %></td>
+          </tr>
+        </table>
+
+        <!-- Proceed To Checkout Button -->
+        <div class="row mt-4">
           <div class="col-md-12 text-center">
-          <%= link_to 'Proceed To Checkout', new_clients_order_path, class: 'btn btn-success w-100' %>
-      </div>
-      </div>
+            <%= link_to 'Proceed To Checkout', new_clients_order_path, class: 'btn btn-success w-100' %>
+          </div>
+        </div>
+      <% else %>
+        <p class="text-center">No items in cart to proceed to checkout.</p>
+      <% end %>
     </div>
   </div>
 

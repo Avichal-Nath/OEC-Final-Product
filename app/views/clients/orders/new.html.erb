@@ -10,37 +10,37 @@
 
         <div class="form-group">
           <%= form.label :first_name, 'First Name' %>
-          <%= form.text_field :first_name, class: 'form-control', required: true %>
+          <%= form.text_field :first_name, class: 'form-control required-field', required: true %>
         </div>
 
         <div class="form-group">
           <%= form.label :last_name, 'Last Name' %>
-          <%= form.text_field :last_name, class: 'form-control', required: true %>
+          <%= form.text_field :last_name, class: 'form-control required-field', required: true %>
         </div>
 
         <div class="form-group">
           <%= form.label :address, 'Street Address' %>
-          <%= form.text_area :address, class: 'form-control', required: true %>
+          <%= form.text_area :address, class: 'form-control required-field', required: true %>
         </div>
 
         <div class="form-group">
           <%= form.label :city, 'Town / City' %>
-          <%= form.text_field :city, class: 'form-control', required: true %>
+          <%= form.text_field :city, class: 'form-control required-field', required: true %>
         </div>
 
         <div class="form-group">
           <%= form.label :zip, 'Postcode / ZIP' %>
-          <%= form.text_field :zip, class: 'form-control', required: true %>
+          <%= form.text_field :zip, class: 'form-control required-field', required: true %>
         </div>
 
         <div class="form-group">
           <%= form.label :phone, 'Phone' %>
-          <%= form.text_field :phone, class: 'form-control', required: true %>
+          <%= form.text_field :phone, class: 'form-control required-field', required: true %>
         </div>
 
         <div class="form-group">
           <%= form.label :email, 'Email Address' %>
-          <%= form.email_field :email, class: 'form-control', required: true %>
+          <%= form.email_field :email, class: 'form-control required-field', required: true %>
         </div>
       </div>
 
@@ -84,34 +84,25 @@
     <h3>Payment Information</h3>
     <div class="mb-3">
       <%= form.label :card_number, 'Card Number' %>
-      <%= form.text_field :card_number, name: 'payment_details[card_number]', class: 'form-control', required: true %>
+      <%= form.text_field :card_number, name: 'payment_details[card_number]', class: 'form-control required-field', required: true, maxlength: 12, minlength: 12 %>
     </div>
 
     <div class="mb-3">
-      <%= form.label :expiry, 'Expiry (MM/YY)' %>
-      <%= form.text_field :expiry, name: 'payment_details[expiry]', class: 'form-control', required: true %>
+      <%= form.label :expiry, 'Expiry (MM/YYYY)' %>
+      <%= form.text_field :expiry, name: 'payment_details[expiry]', class: 'form-control required-field', required: true, pattern: '\d{2}/\d{4}' %>
     </div>
 
     <div class="mb-3">
       <%= form.label :cvv, 'CVV' %>
-      <%= form.text_field :cvv, name: 'payment_details[cvv]', class: 'form-control', required: true %>
+      <%= form.text_field :cvv, name: 'payment_details[cvv]', class: 'form-control required-field', required: true, maxlength: 3, minlength: 3 %>
     </div>
 
-    <%# <h3>Your Order</h3>
-    <div class="order-summary">
-      <p>Product: <span>Single Shirt × 1</span> <strong>$20.00</strong></p>
-      <p>Product: <span>Black Trousers × 1</span> <strong>$16.00</strong></p>
-      <p>Subtotal: <strong>$36.00</strong></p>
-      <p>Shipping: <strong>$10.00</strong></p>
-      <p>Total: <strong>$46.00</strong></p>
-    </div> %>
-
     <div class="form-check mt-3">
-      <%= form.check_box :terms, class: 'form-check-input', id: 'terms' %>
+      <%= form.check_box :terms, class: 'form-check-input', id: 'terms', required: true %>
       <%= form.label :terms, 'I have read and agree to the website terms and conditions', class: 'form-check-label' %>
     </div>
 
-    <%= form.submit 'Place Order', class: 'btn btn-success mt-3' %>
+    <%= form.submit 'Place Order', class: 'btn btn-success mt-3', id: 'placeOrderButton', disabled: true %>
   <% end %>
 
   <%= link_to 'Back to Cart', clients_cart_path, class: 'btn btn-secondary mt-3' %>
@@ -158,8 +149,46 @@
 </style>
 
 <script>
-  // Toggle shipping address fields
   document.getElementById('differentAddress').addEventListener('change', function() {
     document.getElementById('shippingAddress').style.display = this.checked ? 'block' : 'none';
   });
+
+  // Enable or disable the Place Order button based on form validation
+  function validateForm() {
+    const requiredFields = document.querySelectorAll('.required-field');
+    let allValid = true;
+
+    requiredFields.forEach(function(field) {
+      if (!field.value.trim()) {
+        allValid = false;
+      }
+    });
+
+    const cardNumber = document.querySelector('input[name="payment_details[card_number]"]');
+    const expiry = document.querySelector('input[name="payment_details[expiry]"]');
+    const cvv = document.querySelector('input[name="payment_details[cvv]"]');
+    const terms = document.getElementById('terms');
+
+    // Validate card number, expiry, and CVV
+    const cardNumberValid = cardNumber.value.trim().length === 12;
+    const expiryValid = /^\d{2}\/\d{4}$/.test(expiry.value.trim());
+    const expiryDate = new Date(expiry.value.trim().split('/')[1], expiry.value.trim().split('/')[0] - 1);
+    const currentDate = new Date();
+    const expiryNotPast = expiryDate >= currentDate;
+    const cvvValid = cvv.value.trim().length === 3;
+    const termsChecked = terms.checked;
+
+    if (!cardNumberValid || !expiryValid || !expiryNotPast || !cvvValid || !termsChecked) {
+      allValid = false;
+    }
+
+    document.getElementById('placeOrderButton').disabled = !allValid;
+  }
+
+  // Add event listeners to required fields for validation
+  document.querySelectorAll('.required-field').forEach(function(field) {
+    field.addEventListener('input', validateForm);
+  });
+
+  document.getElementById('terms').addEventListener('change', validateForm);
 </script>

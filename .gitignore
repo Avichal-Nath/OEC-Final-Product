@@ -8,8 +8,8 @@
 /.bundle
 
 # Ignore all environment files (except templates).
-/.env*
-!/.env*.erb
+/env*
+!/env*.erb
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -22,21 +22,26 @@
 !/tmp/pids/
 !/tmp/pids/.keep
 
-# Ignore storage (uploaded files in development and any SQLite databases).
+# Ignore storage (uploaded files in development).
 /storage/*
 !/storage/.keep
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
 
+# Ignore assets and packs
 /public/assets
+/public/packs
+/public/packs-test
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-/public/packs
-/public/packs-test
+# Ignore node modules and yarn files
 /node_modules
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+# Keep the SQLite database
+!/db/*.sqlite3
