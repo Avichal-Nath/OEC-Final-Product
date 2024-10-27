@@ -75,7 +75,7 @@
           <td><%= number_to_currency(@cart_items.sum { |item| item.product.price * item.quantity }) %></td>
         </tr>
         <tr>
-          <th>Shipping</th>
+          <th>Delivery Charges</th>
           <td>$$</td> <!-- You can replace $$ with the actual shipping logic later -->
         </tr>
         <tr>
@@ -84,26 +84,12 @@
         </tr>
       </table>
 
-      <%= form_with url: clients_mock_payments_path, method: :post, local: true do |form| %>
-  <h3>Payment Information</h3>
-  <div class="mb-3">
-    <label for="card_number">Card Number</label>
-    <%= form.text_field :card_number, name: 'payment_details[card_number]', class: 'form-control' %>
-  </div>
-
-  <div class="mb-3">
-    <label for="expiry">Expiry (MM/YY)</label>
-    <%= form.text_field :expiry, name: 'payment_details[expiry]', class: 'form-control' %>
-  </div>
-
-  <div class="mb-3">
-    <label for="cvv">CVV</label>
-    <%= form.text_field :cvv, name: 'payment_details[cvv]', class: 'form-control' %>
-  </div>
-
-  <%= form.submit 'Proceed To Checkout', class: 'btn btn-success w-100' %>
-<% end %>
-
+      <!-- Proceed To Checkout Button -->
+      <div class="row mt-4">
+          <div class="col-md-12 text-center">
+          <%= link_to 'Proceed To Checkout', new_clients_order_path, class: 'btn btn-success w-100' %>
+      </div>
+      </div>
     </div>
   </div>
 

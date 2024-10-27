@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_15_095746) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_26_232005) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -60,6 +60,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_15_095746) do
     t.datetime "updated_at", null: false
     t.string "color"
     t.string "size"
+    t.integer "variant_id"
     t.index ["product_id"], name: "index_cart_items_on_product_id"
     t.index ["user_id"], name: "index_cart_items_on_user_id"
   end
@@ -87,6 +88,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_15_095746) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "invoices", force: :cascade do |t|
+    t.integer "order_id", null: false
+    t.string "invoice_number", null: false
+    t.decimal "subtotal", precision: 10, scale: 2, null: false
+    t.decimal "shipping_cost", precision: 10, scale: 2, null: false
+    t.decimal "total_price", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
+    t.index ["order_id"], name: "index_invoices_on_order_id"
+  end
+
   create_table "order_items", force: :cascade do |t|
     t.integer "order_id", null: false
     t.integer "variant_id", null: false
@@ -94,6 +107,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_15_095746) do
     t.decimal "unit_price", precision: 10, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "product_id"
     t.index ["order_id"], name: "index_order_items_on_order_id"
     t.index ["variant_id"], name: "index_order_items_on_variant_id"
   end
@@ -104,6 +118,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_15_095746) do
     t.string "status", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "address"
+    t.decimal "subtotal", precision: 10, scale: 2
+    t.decimal "shipping_cost", precision: 10, scale: 2
+    t.decimal "total", precision: 10, scale: 2
+    t.json "billing_details"
+    t.json "shipping_details"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
@@ -167,6 +187,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_15_095746) do
   add_foreign_key "cart_items", "products"
   add_foreign_key "cart_items", "users"
   add_foreign_key "carts", "users"
+  add_foreign_key "invoices", "orders"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "variants"
   add_foreign_key "orders", "users"

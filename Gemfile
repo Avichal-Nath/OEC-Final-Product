@@ -11,7 +11,11 @@ gem 'will_paginate', '~> 3.1.0'
 
 gem 'kaminari'
 
+gem 'prawn'
+gem 'prawn-table'  # Ensure this gem is included
+
 # gem 'uglifier', '>= 4.2.0'
+
 
 gem 'terser'
 
@@ -80,7 +84,7 @@ group :development do
 end
 
 group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
-  gem "selenium-webdriver"
+  gem 'rspec-rails'
+  gem 'capybara'
+  gem 'selenium-webdriver'
 end

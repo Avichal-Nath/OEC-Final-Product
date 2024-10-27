@@ -1,21 +1,165 @@
-<div class="container">
+<!-- app/views/clients/orders/new.html.erb -->
+<div class="container mt-5">
   <h1>Checkout</h1>
 
   <%= form_with model: @order, url: clients_orders_path, local: true do |form| %>
-    <div class="form-group">
-      <%= form.label :address, 'Shipping Address' %>
-      <%= form.text_area :address, class: 'form-control', required: true %>
+    <div class="row">
+      <!-- Billing Details Section -->
+      <div class="col-md-6">
+        <h3>Billing Details</h3>
+
+        <div class="form-group">
+          <%= form.label :first_name, 'First Name' %>
+          <%= form.text_field :first_name, class: 'form-control', required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :last_name, 'Last Name' %>
+          <%= form.text_field :last_name, class: 'form-control', required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :address, 'Street Address' %>
+          <%= form.text_area :address, class: 'form-control', required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :city, 'Town / City' %>
+          <%= form.text_field :city, class: 'form-control', required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :zip, 'Postcode / ZIP' %>
+          <%= form.text_field :zip, class: 'form-control', required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :phone, 'Phone' %>
+          <%= form.text_field :phone, class: 'form-control', required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :email, 'Email Address' %>
+          <%= form.email_field :email, class: 'form-control', required: true %>
+        </div>
+      </div>
+
+      <!-- Shipping Options Section -->
+      <div class="col-md-6">
+        <h3>Shipping Information</h3>
+        <div class="form-check">
+          <%= form.check_box :different_address, class: 'form-check-input', id: 'differentAddress' %>
+          <%= form.label :different_address, 'Ship to a different address?', class: 'form-check-label' %>
+        </div>
+
+        <div id="shippingAddress" class="mt-3" style="display:none;">
+          <div class="form-group">
+            <%= form.label :shipping_first_name, 'First Name' %>
+            <%= form.text_field :shipping_first_name, class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= form.label :shipping_last_name, 'Last Name' %>
+            <%= form.text_field :shipping_last_name, class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= form.label :shipping_address, 'Street Address' %>
+            <%= form.text_area :shipping_address, class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= form.label :shipping_city, 'Town / City' %>
+            <%= form.text_field :shipping_city, class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= form.label :shipping_zip, 'Postcode / ZIP' %>
+            <%= form.text_field :shipping_zip, class: 'form-control' %>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="form-group mt-3">
-      <%= form.label :payment_method, 'Payment Method' %>
-      <%= form.select :payment_method, ['Credit Card', 'Paypal', 'Bank Transfer'], {}, class: 'form-control', required: true %>
+    <h3>Payment Information</h3>
+    <div class="mb-3">
+      <%= form.label :card_number, 'Card Number' %>
+      <%= form.text_field :card_number, name: 'payment_details[card_number]', class: 'form-control', required: true %>
     </div>
 
-    <div class="form-group mt-4">
-      <%= form.submit 'Place Order', class: 'btn btn-primary' %>
+    <div class="mb-3">
+      <%= form.label :expiry, 'Expiry (MM/YY)' %>
+      <%= form.text_field :expiry, name: 'payment_details[expiry]', class: 'form-control', required: true %>
     </div>
+
+    <div class="mb-3">
+      <%= form.label :cvv, 'CVV' %>
+      <%= form.text_field :cvv, name: 'payment_details[cvv]', class: 'form-control', required: true %>
+    </div>
+
+    <%# <h3>Your Order</h3>
+    <div class="order-summary">
+      <p>Product: <span>Single Shirt × 1</span> <strong>$20.00</strong></p>
+      <p>Product: <span>Black Trousers × 1</span> <strong>$16.00</strong></p>
+      <p>Subtotal: <strong>$36.00</strong></p>
+      <p>Shipping: <strong>$10.00</strong></p>
+      <p>Total: <strong>$46.00</strong></p>
+    </div> %>
+
+    <div class="form-check mt-3">
+      <%= form.check_box :terms, class: 'form-check-input', id: 'terms' %>
+      <%= form.label :terms, 'I have read and agree to the website terms and conditions', class: 'form-check-label' %>
+    </div>
+
+    <%= form.submit 'Place Order', class: 'btn btn-success mt-3' %>
   <% end %>
 
-  <%= link_to 'Back to Cart', clients_cart_path, class: 'btn btn-secondary mt-2' %>
+  <%= link_to 'Back to Cart', clients_cart_path, class: 'btn btn-secondary mt-3' %>
+
+  <div class="security-assurance mt-4">
+    <p>Your payment information is secured by SSL encryption. We accept all major credit cards.</p>
+  </div>
 </div>
+
+<!-- CSS styles for improved layout -->
+<style>
+  .order-summary {
+    border: 1px solid #ccc;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+
+  .progress-indicator {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .progress-indicator li {
+    display: inline;
+    margin-right: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+  }
+
+  .progress-indicator li.active {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .security-assurance {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #e7f1ff;
+    border-radius: 5px;
+  }
+</style>
+
+<script>
+  // Toggle shipping address fields
+  document.getElementById('differentAddress').addEventListener('change', function() {
+    document.getElementById('shippingAddress').style.display = this.checked ? 'block' : 'none';
+  });
+</script>

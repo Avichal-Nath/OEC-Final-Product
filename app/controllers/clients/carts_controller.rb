@@ -1,6 +1,6 @@
 module Clients
   class CartsController < ApplicationController
-    # Ensure authentication if necessary (uncomment if you have user authentication)
+    # Ensure authentication for all actions except show and add_item
     before_action :authenticate_user!, except: [:index, :show, :add_item]
 
     before_action :set_cart, only: [:show, :confirm]
@@ -24,6 +24,7 @@ module Clients
         # Check if item is already in CartItem for the user, otherwise create a new one
         cart_item = CartItem.find_or_initialize_by(
           user_id: current_user.id,
+          variant_id: variant.id,
           product_id: product.id,
           color: params[:color],
           size: params[:size]
@@ -96,6 +97,12 @@ module Clients
     private
 
     def set_cart
+      # Redirect to login if the user is not logged in
+      unless user_signed_in?
+        redirect_to new_user_session_path, alert: 'You need to log in to access the cart.'
+        return
+      end
+
       @cart_items = CartItem.where(user_id: current_user.id)
     end
   end

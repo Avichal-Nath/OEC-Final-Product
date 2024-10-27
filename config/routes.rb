@@ -35,7 +35,7 @@ Rails.application.routes.draw do
   namespace :clients do
     root 'home#index'
 
-    # Products routes (including men's wear)
+    # Products routes
     resources :products, only: [:index, :show] do
       collection do
         get 'mens_wear', to: 'products#men', as: :mens_wear
@@ -55,11 +55,16 @@ Rails.application.routes.draw do
       post 'confirm', to: 'carts#confirm', as: 'confirm'
     end
 
-    # Orders routes
-    resources :orders, only: [:new, :create, :show]  # Ensure orders routes are defined
-    resources :users, only: [:new, :create, :edit, :update]
+# Orders routes
+resources :orders, only: [:new, :create, :show] do
+  member do
+    get 'confirm_payment', to: 'orders#confirm_payment'
+    get 'order_confirmation', to: 'orders#order_confirmation'
+    get 'generate_invoice', to: 'orders#generate_invoice'  # Change to GET request
+  end
+end
 
-    # Mock payment route should be within the clients namespace
+    # Mock payment route
     post 'mock_payments', to: 'mock_payments#create', as: 'mock_payments'
   end
 
@@ -68,4 +73,5 @@ Rails.application.routes.draw do
 
   # Root route set to client-side home index
   root "clients/home#index"
+  #root "admin/products#index"
 end
