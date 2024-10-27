@@ -1,64 +1,65 @@
 module Clients
   class ProductsController < ApplicationController
+    before_action :set_categories_colors_sizes, only: [:index, :men, :women]
+
     def index
-      @products = Product.all
-      @categories = Category.all
-      @colors = Variant.pluck(:color).uniq
-      @sizes = Variant.pluck(:size).uniq
+      # Main search results based on the full query
+      @products = Product.search(
+        query: params[:search],
+        color: params[:color],
+        size: params[:size],
+        min_price: params[:min_price],
+        max_price: params[:max_price]
+      )
 
-      # Apply filters if any parameters are present
-      filter_products if params_present?
-    end
-
-    # Search action
-    def search
-      if params[:query].present?
-        # Adjust for SQLite or PostgreSQL
-        query_param = "%#{params[:query]}%"
-
-        if ActiveRecord::Base.connection.adapter_name == 'SQLite'
-          # For SQLite
-          @products = Product.where("name LIKE ? OR description LIKE ?", query_param, query_param)
-        else
-          # For PostgreSQL (case-insensitive search)
-          @products = Product.where("name ILIKE ? OR description ILIKE ?", query_param, query_param)
-        end
+      # Product recommendations based on the starting letters of the query
+      if params[:search].present?
+        @recommendations = Product.where("LOWER(name) LIKE ?", "#{params[:search].downcase}%").limit(5)
       else
-        @products = Product.all
+        @recommendations = []
       end
-
-      render :index
     end
 
     def men
-      # logic for showing men's wear products
-      @products = Product.where(name: ['Shirt', 'T-Shirt']) # Adjust based on your model
+      @categories = Category.where(gender: 'male')
+      @category = Category.find_by(name: 'Men')
+      @products = @category.present? ? @category.products : Product.none
+      apply_filters
+
+      flash[:notice] = "No men's products available." if @products.empty?
     end
 
-    def womens
-      # logic for showing women's wear
-      @products = Product.where(name: ['Dress'])
-      @products = [] if @products.blank?
+    def women
+      @categories = Category.where(gender: 'female')
+      @category = Category.find_by(name: 'Women')
+      @products = @category.present? ? @category.products : Product.none
+      apply_filters
+
+      flash[:notice] = "No women's products available." if @products.empty?
     end
 
     def show
-      @product = Product.find(params[:id])
+      @product = Product.find_by(id: params[:id])
+      if @product.nil?
+        flash[:alert] = "Product not found."
+        redirect_to clients_products_path
+      end
     end
 
     private
 
-    def filter_products
-      @products = @products.where("name LIKE ?", "%#{params[:query]}%") if params[:query].present?
-      @products = @products.where(category_id: params[:category]) if params[:category].present?
-      @products = @products.joins(:variants).where(variants: { color: params[:color] }).distinct if params[:color].present?
-      @products = @products.joins(:variants).where(variants: { size: params[:size] }).distinct if params[:size].present?
-      @products = @products.where('price >= ?', params[:min_price]) if params[:min_price].present?
-      @products = @products.where('price <= ?', params[:max_price]) if params[:max_price].present?
+    def set_categories_colors_sizes
+      @categories = Category.all
+      @colors = Variant.pluck(:color).uniq
+      @sizes = Variant.pluck(:size).uniq
     end
 
-    def params_present?
-      params[:query].present? || params[:category].present? || params[:color].present? || params[:size].present? ||
-        params[:min_price].present? || params[:max_price].present?
+    def apply_filters
+      @products = @products.joins(:variants).where(variants: { color: params[:color] }) if params[:color].present?
+      @products = @products.joins(:variants).where(variants: { size: params[:size] }) if params[:size].present?
+      @products = @products.where('price >= ?', params[:min_price].to_f) if params[:min_price].present?
+      @products = @products.where('price <= ?', params[:max_price].to_f) if params[:max_price].present?
+      @products = @products.distinct
     end
   end
 end

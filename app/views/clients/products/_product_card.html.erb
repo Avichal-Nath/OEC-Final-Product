@@ -1,8 +1,21 @@
-<div class="card">
-  <%= image_tag product.image, class: 'card-img-top' %>
+<div class="card h-100">
+  <!-- Check if the product has an attached image, if not display a default image -->
+  <% if product.image.attached? %>
+    <%= image_tag product.image, class: 'card-img-top', alt: "#{product.name} Image" %>
+  <% else %>
+    <%= image_tag 'default-product.jpg', class: 'card-img-top', alt: "Default Product Image" %>
+  <% end %>
+
   <div class="card-body">
+    <!-- Product Name -->
     <h5 class="card-title"><%= product.name %></h5>
-    <p class="card-text"><%= number_to_currency(product.price) %></p>
+
+    <!-- Product Price with currency formatting -->
+    <p class="card-text">
+      <strong>Price:</strong> <%= number_to_currency(product.price) %>
+    </p>
+
+    <!-- Link to view product details -->
     <%= link_to 'View Product', clients_product_path(product), class: 'btn btn-primary' %>
   </div>
 </div>

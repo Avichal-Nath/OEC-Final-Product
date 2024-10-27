@@ -18,7 +18,7 @@
           <%= link_to 'New Arrivals', '#', class: 'nav-link text-white' %>
         </li>
         <li>
-          <%= link_to 'Complaint Form', new_clients_complaint_path, class: 'btn btn-warning' %>
+          <%= link_to 'Complaint Form', new_clients_complaint_path, class: 'nav-link text-white' %>
         </li>
       </ul>
     </div>
@@ -32,14 +32,21 @@
     <div class="d-flex">
       <ul class="navbar-nav ms-auto">
 
-        <!-- Search form in the header -->
+        <!-- Search Form -->
+<!-- Search Form -->
         <li class="nav-item">
-          <form action="<%= search_clients_products_path %>" method="get" class="d-flex ms-auto" style="margin-right: 20px;">
-          <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-light" type="submit">Search</button>
+          <form class="d-flex me-3" role="search" aria-label="Search Form" method="get" action="<%= clients_products_path %>" style="margin-top: 4px;">
+            <div class="input-group">
+              <input id="search" name="search" class="form-control" type="search" placeholder="Search" aria-label="Search" 
+                    style="box-shadow: none; border: 1px solid #ced4da;">
+              <span class="input-group-text bg-white" style="box-shadow: none;">
+                <!-- Search Icon with cursor pointer to submit form -->
+                <i class="bi bi-search" style="cursor: pointer;" onclick="this.closest('form').submit();"></i>
+              </span>
+            </div>
           </form>
         </li>
-
+      
         <li class="nav-item">
           <%= link_to '#', class: 'nav-link text-white' do %>
             <i class="fas fa-user"></i>
