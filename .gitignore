@@ -22,12 +22,9 @@
 !/tmp/pids/
 !/tmp/pids/.keep
 
-# Ignore storage (uploaded files in development).
-/storage/*
-!/storage/.keep
-/tmp/storage/*
-!/tmp/storage/
-!/tmp/storage/.keep
+# Allow all files under the storage directory, including databases
+# Removed /storage/* so that all files in /storage will be tracked.
+# Now everything in storage/ will be tracked, including the database files.
 
 # Ignore assets and packs
 /public/assets
@@ -43,5 +40,5 @@
 yarn-debug.log*
 .yarn-integrity
 
-# Keep the SQLite database
+# Keep the SQLite database files
 !/db/*.sqlite3
